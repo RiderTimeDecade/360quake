@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="64" height="64" version="1.1" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+ <g transform="matrix(1.3333 0 0 1.3333 -10.667 -10.667)">
+  <circle cx="32" cy="32" r="24" fill="#1a73e8" stroke-width="0"/>
+  <path d="m32 16a16 16 0 0 0-16 16 16 16 0 0 0 16 16 16 16 0 0 0 16-16 16 16 0 0 0-16-16zm0 4a12 12 0 0 1 12 12 12 12 0 0 1-12 12 12 12 0 0 1-12-12 12 12 0 0 1 12-12z" fill="#fff" stroke-width="0"/>
+  <circle cx="32" cy="32" r="6" fill="#fff" stroke-width="0"/>
+ </g>
+</svg> 

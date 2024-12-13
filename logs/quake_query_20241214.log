@@ -1,0 +1,7 @@
+2024-12-14 07:13:21,046 - QuakeQuery - ERROR - Export failed: 没有可导出的结果
+2024-12-14 07:13:23,432 - QuakeQuery - DEBUG - Formatted query: domain: "jxufe.edu.cn"
+2024-12-14 07:13:23,435 - QuakeQuery - DEBUG - Built query data: {'query': 'domain: "jxufe.edu.cn"', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2024/12/14 07:13:23'}}
+2024-12-14 07:13:23,435 - QuakeQuery - INFO - Executing single query: domain: "jxufe.edu.cn"
+2024-12-14 07:13:23,435 - QuakeQuery - DEBUG - Built query data: {'query': 'domain: "jxufe.edu.cn"', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2024/12/14 07:13:23'}}
+2024-12-14 07:13:35,809 - QuakeQuery - DEBUG - Response status code: 200
+2024-12-14 07:13:35,833 - QuakeQuery - INFO - Query successful. Found 100 results

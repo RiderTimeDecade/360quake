@@ -1,0 +1,36 @@
+{
+    "api": {
+        "base_url": "https://quake.360.net/api/v3/search/quake_service",
+        "headers": {
+            "Accept": "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        }
+    },
+    "auth": {
+        "cookie": "",
+        "remember_auth": false
+    },
+    "query": {
+        "default_size": 100
+    },
+    "device_info": {
+        "device_type": "PC",
+        "os": "Windows",
+        "os_version": "10.0",
+        "language": "zh_CN",
+        "network": "3g",
+        "browser_info": "Chrome（版本: 100.0.4896.60  内核: Blink）"
+    },
+    "export": {
+        "fields": [
+            "domain",
+            "ip",
+            "port",
+            "service.name",
+            "location.country_cn",
+            "location.province_cn",
+            "location.city_cn"
+        ]
+    }
+} 
