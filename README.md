@@ -25,7 +25,7 @@
 
 - Windows: `360Quake查询工具_windows.exe`
 - macOS: `360Quake查询工具_darwin.app`
-- Linux: `360Quake查询工具_linux`
+- Linux: `360Quake查询工���_linux`
 
 ### 从源码构建
 
@@ -51,6 +51,10 @@ python build.py
 ```
 
 ## 使用说明
+
+### 程序界面
+
+![程序界面截图](assets/1.png)
 
 1. 启动程序后，在认证设置区域输入您的 360 Quake Cookie
 2. 在查询设置区域输入查询语句（支持标准的 Quake 查询语法）
