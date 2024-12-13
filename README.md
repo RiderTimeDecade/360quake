@@ -54,7 +54,7 @@ python build.py
 
 ### 程序界面
 
-![图片](./assets/1.png)
+![图片](./assets/360quake.png)
 
 1. 启动程序后，在认证设置区域输入您的 360 Quake Cookie
 2. 在查询设置区域输入查询语句（支持标准的 Quake 查询语法）
