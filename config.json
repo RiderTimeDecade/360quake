@@ -8,7 +8,7 @@
   },
   "query": {
     "default_size": 100,
-    "max_size": 1000,
+    "max_size": 100000,
     "default_format": "JSON"
   },
   "device_info": {
