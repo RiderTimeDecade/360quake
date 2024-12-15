@@ -6,6 +6,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List, Callable
 from ..config.settings import settings
 from ..utils.logger import logger
+import os
 
 class QueryManager:
     def __init__(self, cookies: Optional[Dict[str, str]] = None):
@@ -15,7 +16,11 @@ class QueryManager:
         self.cookies = cookies or {}
         self.device_info = settings.get('device_info')
         self.progress_callback = None
-
+        
+        # 创建不使用代理的session
+        self.session = requests.Session()
+        self.session.trust_env = False  # 禁用系统代理
+        
     def build_query_data(self, query: str, size: int = None, start: int = 0) -> Dict[str, Any]:
         """Build query data with device information"""
         if size is None:
@@ -59,7 +64,8 @@ class QueryManager:
                 logger.info(f"Fetching page {page + 1}/{pages} (start: {start}, size: {size})")
                 data = self.build_query_data(query, size, start)
                 
-                response = requests.post(
+                # 使用session发送请求而不是直接使用requests
+                response = self.session.post(
                     self.base_url,
                     headers=self.headers,
                     json=data,
@@ -115,7 +121,8 @@ class QueryManager:
                 logger.info(f"Executing single query: {query}")
                 data = self.build_query_data(query, size)
                 
-                response = requests.post(
+                # 使用session发送请求而不是直接使用requests
+                response = self.session.post(
                     self.base_url,
                     headers=self.headers,
                     json=data,
