@@ -7,6 +7,7 @@ import shutil
 import subprocess
 import platform
 from pathlib import Path
+import argparse
 
 WINDOWS_SETTINGS = {
     'name': '360Quake查询工具',
@@ -14,7 +15,11 @@ WINDOWS_SETTINGS = {
     'binary_name': '360Quake查询工具.exe',
     'platform_args': [
         '--version-file=version.txt',
-        '--uac-admin'
+        '--uac-admin',
+        '--hidden-import=PyQt6',
+        '--hidden-import=PyQt6.QtCore',
+        '--hidden-import=PyQt6.QtGui',
+        '--hidden-import=PyQt6.QtWidgets'
     ]
 }
 
@@ -24,7 +29,11 @@ MACOS_SETTINGS = {
     'binary_name': '360Quake查询工具.app',
     'platform_args': [
         '--osx-bundle-identifier=com.360.quake.query',
-        '--target-architecture=x86_64,arm64'
+        '--target-architecture=x86_64,arm64',
+        '--hidden-import=PyQt6',
+        '--hidden-import=PyQt6.QtCore',
+        '--hidden-import=PyQt6.QtGui',
+        '--hidden-import=PyQt6.QtWidgets'
     ]
 }
 
@@ -32,197 +41,168 @@ LINUX_SETTINGS = {
     'name': '360Quake查询工具',
     'icon': 'assets/icon.png',
     'binary_name': '360Quake查询工具',
-    'platform_args': []
+    'platform_args': [
+        '--hidden-import=PyQt6',
+        '--hidden-import=PyQt6.QtCore',
+        '--hidden-import=PyQt6.QtGui',
+        '--hidden-import=PyQt6.QtWidgets'
+    ]
 }
 
 def clean_build():
     """Clean build directories"""
+    print("清理构建目录...")
     dirs_to_clean = ['build', 'dist']
     files_to_clean = ['*.spec']
     
     for dir_name in dirs_to_clean:
         if os.path.exists(dir_name):
             shutil.rmtree(dir_name)
+            print(f"已删除 {dir_name} 目录")
     
     for pattern in files_to_clean:
         for file in Path('.').glob(pattern):
             file.unlink()
+            print(f"已删除 {file}")
 
-def ensure_directory_exists(path):
-    """确保目录存在，如果不存在则创建"""
-    os.makedirs(os.path.dirname(path), exist_ok=True)
+def ensure_requirements():
+    """确保所有依赖都已安装"""
+    print("检查并安装依赖...")
+    subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt"], check=True)
+    subprocess.run([sys.executable, "-m", "pip", "install", "pyinstaller"], check=True)
 
-def get_platform_settings():
-    """获取当前平台的设置"""
-    system = platform.system().lower()
-    if system == 'windows':
-        return WINDOWS_SETTINGS
-    elif system == 'darwin':
-        return MACOS_SETTINGS
-    else:
-        return LINUX_SETTINGS
-
-def build_executable(target_platform=None):
-    """Build executable using PyInstaller"""
-    # 获取当前工作目录
-    current_dir = os.path.dirname(os.path.abspath(__file__))
+def create_default_icon():
+    """创建默认图标文件"""
+    print("创建默认图标文件...")
+    os.makedirs('assets', exist_ok=True)
     
-    # 设置文件路径
-    main_file = os.path.join(current_dir, 'main.py')
-    settings_file = os.path.join(current_dir, 'src', 'config', 'settings.json')
-
-    # 确保配置目录存在
-    ensure_directory_exists(settings_file)
-
-    # 检查必要文件是否存在
-    if not os.path.exists(main_file):
-        raise FileNotFoundError(f"找不到主程序文件: {main_file}")
-
-    # 获取平台设置
-    platform_settings = get_platform_settings()
+    # 创建一个简单的空图标文件
+    if not os.path.exists('assets/icon.ico'):
+        with open('assets/icon.ico', 'wb') as f:
+            # 写入一个最小的有效ICO文件
+            f.write(bytes.fromhex('00 00 01 00 01 00 10 10 00 00 01 00 20 00 68 04 00 00 16 00 00 00'))
+            f.write(bytes([0] * 1128))  # 添加空白图标数据
     
-    # 设置数据文件路径分隔符
-    separator = ';' if platform.system().lower() == 'windows' else ':'
+    if not os.path.exists('assets/icon.png'):
+        shutil.copy('assets/icon.ico', 'assets/icon.png')
     
-    # 构建数据文件路径列表
-    data_files = [
-        (settings_file, 'src/config'),  # 配置文件
-        (os.path.join(current_dir, 'src'), 'src')  # 整个src目录
-    ]
-    
-    # 构建--add-data参数
-    data_args = [f'--add-data={src}{separator}{dst}' for src, dst in data_files]
+    if not os.path.exists('assets/icon.icns'):
+        shutil.copy('assets/icon.ico', 'assets/icon.icns')
 
-    # PyInstaller 命令行参数
+def build_platform(platform_name: str, settings: dict, output_dir: str):
+    """为指定平台构建可执行文件"""
+    print(f"\n开始构建 {platform_name} 版本...")
+    
+    # 确保图标文件存在
+    create_default_icon()
+    
+    # 准备构建命令
     cmd = [
-        'pyinstaller',
-        f'--name={platform_settings["name"]}',
-        '--windowed',  # 无控制台窗口
-        '--noconfirm',  # 覆盖现有文件
-        '--clean',  # 清理临时文件
-        '--hidden-import=PyQt6.QtCore',
-        '--hidden-import=PyQt6.QtGui',
-        '--hidden-import=PyQt6.QtWidgets',
-        '--onefile',  # 生成单个可执行文件
+        sys.executable, "-m", "PyInstaller",
+        "--name", settings['name'],
+        "--onefile",
+        "--windowed",
+        "--clean",
+        "--noconfirm",
+        "--collect-all", "PyQt6",
+        *settings['platform_args'],
+        "main.py"
     ]
-
-    # 添加图标（如果存在）
-    icon_path = os.path.join(current_dir, platform_settings['icon'])
-    if os.path.exists(icon_path):
-        cmd.append(f'--icon={icon_path}')
-
-    # 添加数据文件参数
-    cmd.extend(data_args)
-
-    # 添加平台特定参数
-    cmd.extend(platform_settings['platform_args'])
-
-    # 添加主程序文件
-    cmd.append(main_file)
-
-    print(f"为 {platform.system()} 平台构建...")
-    print("执行命令:", ' '.join(cmd))
     
-    # 执行打包命令
-    result = subprocess.run(cmd, capture_output=True, text=True)
+    # 只在图标文件存在时添加图标参数
+    if os.path.exists(settings['icon']):
+        cmd.extend(["--icon", settings['icon']])
     
-    # 打印命令输出
-    if result.stdout:
-        print("标准输出:", result.stdout)
-    if result.stderr:
-        print("错误输出:", result.stderr)
-    
-    # 检查命令执行结果
-    if result.returncode != 0:
-        raise RuntimeError(f"打包失败，返回码: {result.returncode}")
-    
-    # 重命名输出文件（如果需要）
-    dist_dir = os.path.join(current_dir, 'dist')
-    platform_suffix = f"_{platform.system().lower()}"
-    if platform.system().lower() == 'darwin':
-        platform_suffix += f"_{platform.machine()}"
-    
-    output_path = os.path.join(dist_dir, platform_settings['binary_name'])
-    if os.path.exists(output_path):
-        new_name = os.path.splitext(platform_settings['binary_name'])[0] + platform_suffix + os.path.splitext(platform_settings['binary_name'])[1]
-        new_path = os.path.join(dist_dir, new_name)
-        shutil.move(output_path, new_path)
-        print(f"已重命名输出文件为: {new_name}")
+    try:
+        # 执行构建
+        subprocess.run(cmd, check=True)
+        
+        # 创建输出目录
+        os.makedirs(output_dir, exist_ok=True)
+        
+        # 移动构建结果到输出目录
+        src = os.path.join("dist", settings['binary_name'])
+        dst = os.path.join(output_dir, settings['binary_name'])
+        if os.path.exists(src):
+            shutil.move(src, dst)
+            print(f"构建成功: {dst}")
+        else:
+            print(f"警告: 未找到构建结果 {src}")
+            
+    except subprocess.CalledProcessError as e:
+        print(f"构建失败: {str(e)}")
+        return False
+    except Exception as e:
+        print(f"发生错误: {str(e)}")
+        return False
+        
+    return True
 
-def create_version_file():
-    """Create version file for Windows executable"""
-    version_info = """
-VSVersionInfo(
-  ffi=FixedFileInfo(
-    filevers=(1, 0, 0, 0),
-    prodvers=(1, 0, 0, 0),
-    mask=0x3f,
-    flags=0x0,
-    OS=0x40004,
-    fileType=0x1,
-    subtype=0x0,
-    date=(0, 0)
-  ),
-  kids=[
-    StringFileInfo([
-      StringTable(
-        u'040904B0',
-        [StringStruct(u'CompanyName', u'360'),
-         StringStruct(u'FileDescription', u'360 Quake Query Tool'),
-         StringStruct(u'FileVersion', u'1.0.0'),
-         StringStruct(u'InternalName', u'360quake'),
-         StringStruct(u'LegalCopyright', u'Copyright (c) 2024'),
-         StringStruct(u'OriginalFilename', u'360Quake查询工具.exe'),
-         StringStruct(u'ProductName', u'360 Quake Query Tool'),
-         StringStruct(u'ProductVersion', u'1.0.0')])
-    ]),
-    VarFileInfo([VarStruct(u'Translation', [0x0409, 0x04B0])])
-  ]
-)
-"""
-    with open('version.txt', 'w', encoding='utf-8') as f:
-        f.write(version_info)
-
-def create_assets_directory():
-    """创建资源目录并添加默认图标"""
-    assets_dir = 'assets'
-    if not os.path.exists(assets_dir):
-        os.makedirs(assets_dir)
-        print(f"创建资源目录: {assets_dir}")
+def build_all():
+    """构建所有平台版本"""
+    # 清理旧的构建文件
+    clean_build()
+    
+    # 确保依赖已安装
+    ensure_requirements()
+    
+    # 创建输出目录
+    output_base = "releases"
+    os.makedirs(output_base, exist_ok=True)
+    
+    # 获取版本号
+    version = "1.0.0"  # 可以从version.txt或其他地方获取
+    
+    # 构建各平台版本
+    platforms = {
+        "windows": WINDOWS_SETTINGS,
+        "macos": MACOS_SETTINGS,
+        "linux": LINUX_SETTINGS
+    }
+    
+    results = {}
+    for platform_name, settings in platforms.items():
+        output_dir = os.path.join(output_base, f"{platform_name}-{version}")
+        success = build_platform(platform_name, settings, output_dir)
+        results[platform_name] = success
+    
+    # 打印构建结果
+    print("\n构建结果汇总:")
+    for platform_name, success in results.items():
+        status = "成功" if success else "失败"
+        print(f"{platform_name}: {status}")
 
 def main():
-    """Main build process"""
-    try:
-        print("开始构建应用...")
-        
-        # 创建资源目录
-        create_assets_directory()
-        
+    """Main entry point"""
+    parser = argparse.ArgumentParser(description="360Quake查询工具构建脚本")
+    parser.add_argument('--platform', choices=['all', 'windows', 'macos', 'linux'],
+                      default='all', help='选择要构建的平台')
+    args = parser.parse_args()
+    
+    if args.platform == 'all':
+        build_all()
+    else:
         # 清理旧的构建文件
-        print("清理旧的构建文件...")
         clean_build()
         
-        # 创建版本信息文件（仅Windows）
-        if platform.system().lower() == 'windows':
-            print("创建版本信息文件...")
-            create_version_file()
+        # 确保依赖已安装
+        ensure_requirements()
         
-        # 构建可执行文件
-        print("正在构建可执行文件...")
-        build_executable()
+        # 构建指定平台
+        settings = {
+            'windows': WINDOWS_SETTINGS,
+            'macos': MACOS_SETTINGS,
+            'linux': LINUX_SETTINGS
+        }[args.platform]
         
-        print("构建完成！")
+        output_dir = os.path.join("releases", args.platform)
+        success = build_platform(args.platform, settings, output_dir)
         
-        # 显示输出文件位置
-        dist_dir = os.path.abspath('dist')
-        print(f"\n可执行文件位置: {dist_dir}")
-        print("文件列表:")
-        for file in os.listdir(dist_dir):
-            print(f"- {file}")
-            
-    except Exception as e:
-        print(f"构建失败: {str(e)}")
-        sys.exit(1)
+        if success:
+            print(f"\n{args.platform}平台构建成功!")
+        else:
+            print(f"\n{args.platform}平台构建失败!")
+            sys.exit(1)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main() 
