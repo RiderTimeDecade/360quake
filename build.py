@@ -8,6 +8,15 @@ import subprocess
 import platform
 from pathlib import Path
 import argparse
+import site
+
+def get_pyqt6_path():
+    """获取 PyQt6 的安装路径"""
+    site_packages = site.getsitepackages()[0]
+    pyqt6_path = os.path.join(site_packages, 'PyQt6')
+    if os.path.exists(pyqt6_path):
+        return pyqt6_path
+    return None
 
 WINDOWS_SETTINGS = {
     'name': '360Quake查询工具',
@@ -19,7 +28,10 @@ WINDOWS_SETTINGS = {
         '--hidden-import=PyQt6',
         '--hidden-import=PyQt6.QtCore',
         '--hidden-import=PyQt6.QtGui',
-        '--hidden-import=PyQt6.QtWidgets'
+        '--hidden-import=PyQt6.QtWidgets',
+        '--hidden-import=PyQt6.sip',
+        '--collect-all=PyQt6',
+        '--runtime-hook=runtime_hook.py'
     ]
 }
 
@@ -89,12 +101,61 @@ def create_default_icon():
     if not os.path.exists('assets/icon.icns'):
         shutil.copy('assets/icon.ico', 'assets/icon.icns')
 
+def create_runtime_hook():
+    """创建运行时钩子文件"""
+    print("创建运行时钩子文件...")
+    hook_content = '''
+import os
+import sys
+
+def _append_run_path():
+    if getattr(sys, 'frozen', False):
+        # 如果是打包后的可执行文件
+        application_path = os.path.dirname(sys.executable)
+        # 添加 Qt 库路径到系统路径
+        qt_bin_path = os.path.join(application_path, 'PyQt6', 'Qt6', 'bin')
+        qt_plugins_path = os.path.join(application_path, 'PyQt6', 'Qt6', 'plugins')
+        if os.path.exists(qt_bin_path):
+            os.environ['PATH'] = qt_bin_path + os.pathsep + os.environ.get('PATH', '')
+        if os.path.exists(qt_plugins_path):
+            os.environ['QT_PLUGIN_PATH'] = qt_plugins_path
+            os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = os.path.join(qt_plugins_path, 'platforms')
+
+_append_run_path()
+'''
+    with open('runtime_hook.py', 'w', encoding='utf-8') as f:
+        f.write(hook_content)
+
 def build_platform(platform_name: str, settings: dict, output_dir: str):
     """为指定平台构建可执行文件"""
     print(f"\n开始构建 {platform_name} 版本...")
     
     # 确保图标文件存在
     create_default_icon()
+    
+    # 创建运行时钩子
+    create_runtime_hook()
+    
+    # 获取 PyQt6 路径
+    pyqt6_path = get_pyqt6_path()
+    if pyqt6_path and platform_name == 'windows':
+        # 添加 PyQt6 相关的二进制文件
+        qt6_plugins = os.path.join(pyqt6_path, 'Qt6', 'plugins')
+        qt6_bin = os.path.join(pyqt6_path, 'Qt6', 'bin')
+        
+        platform_args = settings['platform_args'].copy()
+        if os.path.exists(qt6_plugins):
+            platforms_path = os.path.join(qt6_plugins, 'platforms')
+            styles_path = os.path.join(qt6_plugins, 'styles')
+            if os.path.exists(platforms_path):
+                platform_args.append(f'--add-data={platforms_path}/*;PyQt6/Qt6/plugins/platforms')
+            if os.path.exists(styles_path):
+                platform_args.append(f'--add-data={styles_path}/*;PyQt6/Qt6/plugins/styles')
+        
+        if os.path.exists(qt6_bin):
+            platform_args.append(f'--add-data={qt6_bin}/*;PyQt6/Qt6/bin')
+    else:
+        platform_args = settings['platform_args']
     
     # 准备构建命令
     cmd = [
@@ -104,8 +165,7 @@ def build_platform(platform_name: str, settings: dict, output_dir: str):
         "--windowed",
         "--clean",
         "--noconfirm",
-        "--collect-all", "PyQt6",
-        *settings['platform_args'],
+        *platform_args,
         "main.py"
     ]
     
