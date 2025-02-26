@@ -7,6 +7,8 @@ from typing import Dict, Any, Optional, List, Callable
 from ..config.settings import settings
 from ..utils.logger import logger
 import os
+import json
+import time
 
 class QueryManager:
     def __init__(self, cookies: Optional[Dict[str, str]] = None):
@@ -25,6 +27,10 @@ class QueryManager:
         """Build query data with device information"""
         if size is None:
             size = settings.get('query.default_size')
+
+        # 清理查询语句
+        query = self._clean_query(query)
+        logger.debug(f"Cleaned query: {query}")
 
         device_info = self.device_info.copy()
         device_info.update({
@@ -45,6 +51,26 @@ class QueryManager:
         logger.debug(f"Built query data: {data}")
         return data
 
+    def _clean_query(self, query: str) -> str:
+        """Clean and format query string"""
+        # 移除可能的多余引号
+        query = query.strip('"')
+        
+        # 如果查询以 "服务数据 |" 开头，移除它
+        if query.startswith("服务数据 |"):
+            query = query[len("服务数据 |"):].strip()
+            
+        # 移除末尾多余的括号
+        while query.endswith(')') and query.count('(') < query.count(')'):
+            query = query[:-1]
+            
+        # 规范化域名查询格式
+        query = query.replace('domain: "', 'domain:"')
+        query = query.replace('app: "', 'app:"')
+        
+        logger.debug(f"Original query: {query}")
+        return query.strip()
+
     def execute_paged_query(self, query: str, total_size: int) -> Dict[str, Any]:
         """Execute query with pagination support"""
         try:
@@ -57,6 +83,10 @@ class QueryManager:
                 if self.progress_callback and not self.progress_callback(page + 1, pages):
                     logger.info("Query cancelled by user")
                     break
+
+                # 添加延迟，避免请求过快
+                if page > 0:  # 第一页不延迟
+                    time.sleep(0.1)  # 延迟100毫秒
 
                 start = page * 100
                 size = min(100, total_size - start)
@@ -121,6 +151,11 @@ class QueryManager:
                 logger.info(f"Executing single query: {query}")
                 data = self.build_query_data(query, size)
                 
+                # 打印详细的请求信息
+                logger.debug(f"Request URL: {self.base_url}")
+                logger.debug(f"Request Headers: {json.dumps(self.headers, ensure_ascii=False, indent=2)}")
+                logger.debug(f"Request Data: {json.dumps(data, ensure_ascii=False, indent=2)}")
+                
                 # 使用session发送请求而不是直接使用requests
                 response = self.session.post(
                     self.base_url,
@@ -130,6 +165,9 @@ class QueryManager:
                 )
                 
                 logger.debug(f"Response status code: {response.status_code}")
+                logger.debug(f"Response headers: {dict(response.headers)}")
+                logger.debug(f"Response content: {response.text[:1000]}...")  # 只打印前1000个字符
+                
                 response.raise_for_status()
                 
                 result = response.json()
