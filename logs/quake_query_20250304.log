@@ -1,0 +1,114 @@
+2025-03-04 00:07:30,140 - QuakeQuery - INFO - Cookie saved successfully
+2025-03-04 00:07:50,953 - QuakeQuery - DEBUG - Formatted query: domain: "qq.com"
+2025-03-04 00:07:50,973 - QuakeQuery - DEBUG - Original query: domain:"qq.com
+2025-03-04 00:07:50,973 - QuakeQuery - DEBUG - Cleaned query: domain:"qq.com
+2025-03-04 00:07:50,974 - QuakeQuery - DEBUG - Built query data: {'query': 'domain:"qq.com', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2025/03/04 00:07:50'}}
+2025-03-04 00:07:50,974 - QuakeQuery - INFO - Executing single query: domain: "qq.com"
+2025-03-04 00:07:50,974 - QuakeQuery - DEBUG - Original query: domain:"qq.com
+2025-03-04 00:07:50,974 - QuakeQuery - DEBUG - Cleaned query: domain:"qq.com
+2025-03-04 00:07:50,974 - QuakeQuery - DEBUG - Built query data: {'query': 'domain:"qq.com', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2025/03/04 00:07:50'}}
+2025-03-04 00:07:50,974 - QuakeQuery - DEBUG - Request URL: https://quake.360.net/api/search/query_string/quake_service
+2025-03-04 00:07:50,974 - QuakeQuery - DEBUG - Request Headers: {
+  "Content-Type": "application/json",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
+2025-03-04 00:07:50,974 - QuakeQuery - DEBUG - Request Data: {
+  "query": "domain:\"qq.com",
+  "size": 100,
+  "latest": true,
+  "ignore_cache": false,
+  "shortcuts": [
+    "63734bfa9c27d4249ca7261c"
+  ],
+  "start": 0,
+  "device": {
+    "device_type": "PC",
+    "os": "Windows",
+    "os_version": "10.0",
+    "language": "zh_CN",
+    "network": "3g",
+    "browser_info": "Chrome（版本: 100.0.4896.60  内核: Blink）",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "date": "2025/03/04 00:07:50"
+  }
+}
+2025-03-04 00:07:51,214 - QuakeQuery - DEBUG - Response status code: 200
+2025-03-04 00:07:51,214 - QuakeQuery - DEBUG - Response headers: {'Server': 'nginx/1.19.8', 'Date': 'Mon, 03 Mar 2025 16:07:51 GMT', 'Content-Type': 'application/json', 'Content-Length': '92', 'Connection': 'keep-alive', 'Set-Cookie': 'cert_common=db6a4174-984a-419d-9039-ac92c9100899; Domain=quake.360.net; Expires=Wed, 05 Mar 2025 18:07:51 GMT; HttpOnly; Path=/', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE, PUT', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Headers': 'User-Agent,Keep-Alive,Content-Type,X-Requested-With', 'Access-Control-Allow-Origin': '*', 'Strict-Transport-Security': 'max-age=31536000'}
+2025-03-04 00:07:51,214 - QuakeQuery - DEBUG - Response content: {"code":"q3015","message":"查询语句解析错误：domain:\"qq.com","data":{},"meta":{}}
+...
+2025-03-04 00:07:51,214 - QuakeQuery - INFO - Query successful. Found 0 results
+2025-03-04 00:07:51,214 - QuakeQuery - WARNING - No results found for the query
+2025-03-04 00:10:44,061 - QuakeQuery - DEBUG - Formatted query: domain: "qq.com"
+2025-03-04 00:10:44,063 - QuakeQuery - DEBUG - Original query: domain:"qq.com"
+2025-03-04 00:10:44,063 - QuakeQuery - DEBUG - Cleaned query: domain:"qq.com"
+2025-03-04 00:10:44,063 - QuakeQuery - DEBUG - Built query data: {'query': 'domain:"qq.com"', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2025/03/04 00:10:44'}}
+2025-03-04 00:10:44,063 - QuakeQuery - INFO - Executing single query: domain: "qq.com"
+2025-03-04 00:10:44,063 - QuakeQuery - DEBUG - Original query: domain:"qq.com"
+2025-03-04 00:10:44,063 - QuakeQuery - DEBUG - Cleaned query: domain:"qq.com"
+2025-03-04 00:10:44,063 - QuakeQuery - DEBUG - Built query data: {'query': 'domain:"qq.com"', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2025/03/04 00:10:44'}}
+2025-03-04 00:10:44,063 - QuakeQuery - DEBUG - Request URL: https://quake.360.net/api/search/query_string/quake_service
+2025-03-04 00:10:44,064 - QuakeQuery - DEBUG - Request Headers: {
+  "Content-Type": "application/json",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
+2025-03-04 00:10:44,064 - QuakeQuery - DEBUG - Request Data: {
+  "query": "domain:\"qq.com\"",
+  "size": 100,
+  "latest": true,
+  "ignore_cache": false,
+  "shortcuts": [
+    "63734bfa9c27d4249ca7261c"
+  ],
+  "start": 0,
+  "device": {
+    "device_type": "PC",
+    "os": "Windows",
+    "os_version": "10.0",
+    "language": "zh_CN",
+    "network": "3g",
+    "browser_info": "Chrome（版本: 100.0.4896.60  内核: Blink）",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "date": "2025/03/04 00:10:44"
+  }
+}
+2025-03-04 00:10:56,348 - QuakeQuery - DEBUG - Response status code: 200
+2025-03-04 00:10:56,348 - QuakeQuery - DEBUG - Response headers: {'Server': 'nginx/1.19.8', 'Date': 'Mon, 03 Mar 2025 16:10:56 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Set-Cookie': 'cert_common=db6a4174-984a-419d-9039-ac92c9100899; Domain=quake.360.net; Expires=Wed, 05 Mar 2025 18:10:56 GMT; HttpOnly; Path=/', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE, PUT', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Headers': 'User-Agent,Keep-Alive,Content-Type,X-Requested-With', 'Access-Control-Allow-Origin': '*', 'Strict-Transport-Security': 'max-age=31536000', 'Content-Encoding': 'gzip'}
+2025-03-04 00:10:56,355 - QuakeQuery - DEBUG - Response content: {"code":0,"message":"Successful.","data":[{"components":[{"product_level":"中间支撑层","product_type":["内容分发网络(CDN)"],"product_vendor":"腾讯云计算（北京）有限责任公司","product_name_cn":"腾讯云 CDN","product_name_en":"腾讯云 CDN","id":"652656cebeeb45c30f9aece0","product_catalog":["网络安全设备"],"version":""},{"product_level":"中间支撑层","product_type":["Web开发框架(Web framework)"],"product_vendor":"The jQuery Foundation.","product_name_cn":"jQuery","product_name_en":"jQuery","id":"5e847718e3a6c618fd5e8973","product_catalog":["开发与运维"],"version":"1.9.1"},{"product_level":"中间支撑层","product_type":["Web服务器"],"product_vendor":"F5Networks网络公司","product_name_cn":"Nginx Web服务器","product_name_en":"Nginx Web Server","id":"619d9eb837cdc4c4811d36a0","product_catalog":["Web系统与应用"],"version":""}],"images":[{"data":"","mime":"image/webp","width":716,"height":537,"md5":"fb545db412c984849fdafbad7b7572f6","s3_url":"http://beijing.xstore.qihu.com/images-v1/fb545db412c984849fdafbad7b7572f6"}],"org":"China Telecom","ip":"61.170.72.198","is_ipv6"...
+2025-03-04 00:10:56,372 - QuakeQuery - INFO - Query successful. Found 100 results
+2025-03-04 00:11:07,055 - QuakeQuery - DEBUG - Formatted query: (app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")"
+2025-03-04 00:11:07,055 - QuakeQuery - DEBUG - Original query: (app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Cleaned query: (app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Built query data: {'query': '(app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2025/03/04 00:11:07'}}
+2025-03-04 00:11:07,056 - QuakeQuery - INFO - Executing single query: (app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")"
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Original query: (app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Cleaned query: (app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Built query data: {'query': '(app:"Citrix-AD(检索帮助服务应用程序交付控制器" OR app:"Citrix-Gateway思杰网关") AND (domain: "*.com" OR domain: "*.cn")', 'size': 100, 'latest': True, 'ignore_cache': False, 'shortcuts': ['63734bfa9c27d4249ca7261c'], 'start': 0, 'device': {'device_type': 'PC', 'os': 'Windows', 'os_version': '10.0', 'language': 'zh_CN', 'network': '3g', 'browser_info': 'Chrome（版本: 100.0.4896.60  内核: Blink）', 'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36', 'date': '2025/03/04 00:11:07'}}
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Request URL: https://quake.360.net/api/search/query_string/quake_service
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Request Headers: {
+  "Content-Type": "application/json",
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+}
+2025-03-04 00:11:07,056 - QuakeQuery - DEBUG - Request Data: {
+  "query": "(app:\"Citrix-AD(检索帮助服务应用程序交付控制器\" OR app:\"Citrix-Gateway思杰网关\") AND (domain: \"*.com\" OR domain: \"*.cn\")",
+  "size": 100,
+  "latest": true,
+  "ignore_cache": false,
+  "shortcuts": [
+    "63734bfa9c27d4249ca7261c"
+  ],
+  "start": 0,
+  "device": {
+    "device_type": "PC",
+    "os": "Windows",
+    "os_version": "10.0",
+    "language": "zh_CN",
+    "network": "3g",
+    "browser_info": "Chrome（版本: 100.0.4896.60  内核: Blink）",
+    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+    "date": "2025/03/04 00:11:07"
+  }
+}
+2025-03-04 00:11:11,350 - QuakeQuery - DEBUG - Response status code: 200
+2025-03-04 00:11:11,351 - QuakeQuery - DEBUG - Response headers: {'Server': 'nginx/1.19.8', 'Date': 'Mon, 03 Mar 2025 16:11:11 GMT', 'Content-Type': 'application/json', 'Transfer-Encoding': 'chunked', 'Connection': 'keep-alive', 'Vary': 'Accept-Encoding', 'Set-Cookie': 'cert_common=db6a4174-984a-419d-9039-ac92c9100899; Domain=quake.360.net; Expires=Wed, 05 Mar 2025 18:11:11 GMT; HttpOnly; Path=/', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, DELETE, PUT', 'Access-Control-Allow-Credentials': 'true', 'Access-Control-Allow-Headers': 'User-Agent,Keep-Alive,Content-Type,X-Requested-With', 'Access-Control-Allow-Origin': '*', 'Strict-Transport-Security': 'max-age=31536000', 'Content-Encoding': 'gzip'}
+2025-03-04 00:11:11,355 - QuakeQuery - DEBUG - Response content: {"code":0,"message":"Successful.","data":[{"components":[{"product_level":"硬件设备层","product_type":["网关(Gateway)","虚拟专用网络设备(VPN)"],"product_vendor":"Citrix思杰系统信息技术有限公司","product_name_cn":"Citrix-Gateway思杰网关","product_name_en":"citrix-gateway","id":"5f24e87c36d2e5133269a3d1","product_catalog":["网络设备与服务"],"version":""},{"product_level":"中间支撑层","product_type":["Web开发框架(Web framework)"],"product_vendor":"The jQuery Foundation.","product_name_cn":"jQuery","product_name_en":"jQuery","id":"5e847718e3a6c618fd5e8973","product_catalog":["开发与运维"],"version":""},{"product_level":"中间支撑层","product_type":["Web开发框架(Web framework)"],"product_vendor":"The jQuery Foundation.","product_name_cn":"jQuery-ui","product_name_en":"jQuery-ui","id":"6131fcbb8a79fab48ee756e6","product_catalog":["开发与运维"],"version":""},{"product_level":"应用业务层","product_type":["其他"],"product_vendor":"Citrix Systems，Inc","product_name_cn":"Citrix-Receiver","product_name_en":"Citrix-Receiver","id":"5e837f91421aa9b5d15bb36d","product_catal...
+2025-03-04 00:11:11,377 - QuakeQuery - INFO - Query successful. Found 100 results

@@ -53,8 +53,8 @@ class QueryManager:
 
     def _clean_query(self, query: str) -> str:
         """Clean and format query string"""
-        # 移除可能的多余引号
-        query = query.strip('"')
+        # 移除开头和结尾的引号
+        query = query.strip().strip('"')
         
         # 如果查询以 "服务数据 |" 开头，移除它
         if query.startswith("服务数据 |"):
@@ -65,8 +65,14 @@ class QueryManager:
             query = query[:-1]
             
         # 规范化域名查询格式
-        query = query.replace('domain: "', 'domain:"')
-        query = query.replace('app: "', 'app:"')
+        if query.startswith('domain:'):
+            # 确保domain查询有正确的引号
+            domain_part = query[7:].strip().strip('"')  # 移除domain:后的内容中的引号
+            query = f'domain:"{domain_part}"'  # 重新添加正确的引号
+        elif query.startswith('app:'):
+            # 确保app查询有正确的引号
+            app_part = query[4:].strip().strip('"')  # 移除app:后的内容中的引号
+            query = f'app:"{app_part}"'  # 重新添加正确的引号
         
         logger.debug(f"Original query: {query}")
         return query.strip()
