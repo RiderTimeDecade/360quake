@@ -9,7 +9,7 @@ import json  # 添加json导入
 def main():
     """Main entry point"""
     try:
-        # 设置环境变量以启用 PyQt6 调试输出
+        # 设置环境变量以启用 PySide6 调试输出
         os.environ['QT_DEBUG_PLUGINS'] = '1'
         os.environ['QUAKE_DEBUG'] = '1'  # 添加 Quake 调试环境变量
         
@@ -18,8 +18,8 @@ def main():
             # 如果是打包后的可执行文件
             application_path = os.path.dirname(sys.executable)
             # 添加 Qt 库路径到系统路径
-            qt_bin_path = os.path.join(application_path, 'PyQt6', 'Qt6', 'bin')
-            qt_plugins_path = os.path.join(application_path, 'PyQt6', 'Qt6', 'plugins')
+            qt_bin_path = os.path.join(application_path, 'PySide6', 'Qt6', 'bin')
+            qt_plugins_path = os.path.join(application_path, 'PySide6', 'Qt6', 'plugins')
             if os.path.exists(qt_bin_path):
                 os.environ['PATH'] = qt_bin_path + os.pathsep + os.environ.get('PATH', '')
                 print(f"Added Qt bin path: {qt_bin_path}")
@@ -32,8 +32,8 @@ def main():
             # 添加 Qt 库路径到系统路径
             import site
             site_packages = site.getsitepackages()[0]
-            qt_bin_path = os.path.join(site_packages, 'PyQt6', 'Qt6', 'bin')
-            qt_plugins_path = os.path.join(site_packages, 'PyQt6', 'Qt6', 'plugins')
+            qt_bin_path = os.path.join(site_packages, 'PySide6', 'Qt6', 'bin')
+            qt_plugins_path = os.path.join(site_packages, 'PySide6', 'Qt6', 'plugins')
             if os.path.exists(qt_bin_path):
                 os.environ['PATH'] = qt_bin_path + os.pathsep + os.environ.get('PATH', '')
                 print(f"Added Qt bin path: {qt_bin_path}")
@@ -45,10 +45,10 @@ def main():
         print(f"Working directory: {application_path}")
         
         # 导入 Qt 模块
-        print("Importing PyQt6...")
-        from PyQt6.QtWidgets import QApplication
-        from PyQt6.QtCore import QCoreApplication
-        print("PyQt6 imported successfully")
+        print("Importing PySide6...")
+        from PySide6.QtWidgets import QApplication
+        from PySide6.QtCore import QCoreApplication
+        print("PySide6 imported successfully")
         
         # 设置应用程序属性
         QCoreApplication.setOrganizationName("360")
