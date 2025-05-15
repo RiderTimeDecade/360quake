@@ -2,15 +2,15 @@
 Main window for the Quake Query tool.
 """
 import os
-from PyQt6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
+from PySide6.QtWidgets import (QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
                            QLabel, QLineEdit, QPushButton, QTextEdit,
                            QComboBox, QSpinBox, QMessageBox, QFileDialog,
                            QTabWidget, QTableWidget, QTableWidgetItem,
                            QCheckBox, QProgressDialog, QFrame, QMenu,
                            QInputDialog, QDialog, QListWidget, QListWidgetItem,
-                           QSizePolicy, QProgressBar, QGridLayout)
-from PyQt6.QtCore import Qt, QThread, pyqtSignal
-from PyQt6.QtGui import QIcon, QFont, QAction
+                           QSizePolicy, QProgressBar, QGridLayout, QApplication)
+from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtGui import QIcon, QFont, QAction
 from typing import Dict, Any, Optional, List, Tuple
 import re
 import json
@@ -30,13 +30,13 @@ class StyledWidget(QFrame):
     """Base styled widget with modern look"""
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setFrameShape(QFrame.Shape.StyledPanel)
+        self.setFrameShape(QFrame.StyledPanel)
         self.setStyleSheet("""
             StyledWidget {
                 background-color: white;
                 border: 1px solid #e0e0e0;
-                border-radius: 8px;
-                margin: 5px;
+                border-radius: 6px;
+                margin: 3px;
             }
         """)
 
@@ -74,7 +74,7 @@ class CookieManageDialog(QDialog):
         # 添加Cookie到列表
         for cookie in self.cookies:
             item = QListWidgetItem(cookie.get('name', 'Unnamed Cookie'))
-            item.setData(Qt.ItemDataRole.UserRole, cookie)
+            item.setData(Qt.UserRole, cookie)
             self.list_widget.addItem(item)
         
         layout.addWidget(self.list_widget)
@@ -135,14 +135,14 @@ class CookieManageDialog(QDialog):
             if ok and value:
                 cookie = {'name': name, 'value': value}
                 item = QListWidgetItem(name)
-                item.setData(Qt.ItemDataRole.UserRole, cookie)
+                item.setData(Qt.UserRole, cookie)
                 self.list_widget.addItem(item)
                 self.cookies.append(cookie)
 
     def edit_cookie(self):
         current_item = self.list_widget.currentItem()
         if current_item:
-            cookie = current_item.data(Qt.ItemDataRole.UserRole)
+            cookie = current_item.data(Qt.UserRole)
             name, ok = QInputDialog.getText(self, "编辑Cookie", "Cookie名称:", text=cookie['name'])
             if ok and name:
                 value, ok = QInputDialog.getMultiLineText(self, "编辑Cookie", "Cookie值:", text=cookie['value'])
@@ -150,7 +150,7 @@ class CookieManageDialog(QDialog):
                     cookie['name'] = name
                     cookie['value'] = value
                     current_item.setText(name)
-                    current_item.setData(Qt.ItemDataRole.UserRole, cookie)
+                    current_item.setData(Qt.UserRole, cookie)
                     self.cookies[self.list_widget.row(current_item)] = cookie
 
     def delete_cookie(self):
@@ -165,10 +165,10 @@ class CookieManageDialog(QDialog):
 
 class QueryWorker(QThread):
     """Worker thread for executing queries"""
-    finished = pyqtSignal(object)
-    error = pyqtSignal(str)
-    progress = pyqtSignal(int, int, str)
-    status = pyqtSignal(str)
+    finished = Signal(object)
+    error = Signal(str)
+    progress = Signal(int, int, str)
+    status = Signal(str)
 
     def __init__(self, query_manager, query: str, size: int, max_workers: int = 5):
         super().__init__()
@@ -304,21 +304,22 @@ class MainWindow(QMainWindow):
         title.setStyleSheet("""
             font-size: 14px;
             font-weight: bold;
-            color: #333333;
-            padding-bottom: 6px;
+            margin-bottom: 8px;
+            color: #2e7d32;
         """)
         auth_layout.addWidget(title)
 
         # Cookie输入区域
         cookie_widget = QWidget()
-        cookie_layout = QVBoxLayout(cookie_widget)  # 改为垂直布局
+        cookie_layout = QVBoxLayout(cookie_widget)
         cookie_layout.setContentsMargins(0, 0, 0, 0)
-        cookie_layout.setSpacing(6)  # 设置组件间距
+        cookie_layout.setSpacing(6)
         
         cookie_label = QLabel("Cookie:")
+        cookie_label.setStyleSheet("font-weight: 500; color: #2e7d32;")
         self.cookie_input = QLineEdit()
         self.cookie_input.setPlaceholderText("输入Cookie")
-        self.cookie_input.setMinimumHeight(30)  # 增加输入框高度
+        self.cookie_input.setMinimumHeight(32)
         
         cookie_layout.addWidget(cookie_label)
         cookie_layout.addWidget(self.cookie_input)
@@ -331,7 +332,7 @@ class MainWindow(QMainWindow):
         remember_layout.setContentsMargins(0, 0, 0, 0)
         
         self.remember_auth = QCheckBox("记住Cookie")
-        self.remember_auth.setStyleSheet("color: #666666;")
+        self.remember_auth.setStyleSheet("color: #2e7d32;")
         remember_layout.addWidget(self.remember_auth)
         remember_layout.addStretch()
         
@@ -343,14 +344,17 @@ class MainWindow(QMainWindow):
         save_layout.setContentsMargins(0, 0, 0, 0)
         
         self.save_auth_button = QPushButton("保存Cookie")
+        self.save_auth_button.setMinimumHeight(32)
         self.save_auth_button.setStyleSheet("""
             QPushButton {
-                background-color: #00C250;
-                min-width: 100px;
-                min-height: 32px;  # 增加按钮高度
+                background-color: #2e7d32;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 4px 12px;
             }
             QPushButton:hover {
-                background-color: #00A040;
+                background-color: #60ad5e;
             }
         """)
         self.save_auth_button.clicked.connect(self.save_auth_settings)
@@ -514,7 +518,7 @@ class MainWindow(QMainWindow):
             'location.city_cn': 100
         }
         
-        # 应用��宽设置
+        # 应用宽设置
         for col, field in enumerate(settings.get('export.fields')):
             if field in column_widths:
                 self.table.setColumnWidth(col, column_widths[field])
@@ -530,7 +534,11 @@ class MainWindow(QMainWindow):
     def setup_ui(self):
         """Setup the user interface"""
         self.setWindowTitle("360 Quake 查询工具")
-        self.setMinimumSize(1200, 800)
+        self.setMinimumSize(1100, 750)
+        
+        # 设置全局字体
+        font = QFont("Microsoft YaHei", 9)
+        self.setFont(font)
         
         # 创建主窗口部件
         main_widget = QWidget()
@@ -542,7 +550,7 @@ class MainWindow(QMainWindow):
         # 创建左侧容器（认证和查询设置）
         left_container = QWidget()
         left_layout = QVBoxLayout(left_container)
-        left_layout.setSpacing(10)
+        left_layout.setSpacing(8)
         left_layout.setContentsMargins(0, 0, 0, 0)
 
         # 添加认证和查询部分到左侧容器
@@ -553,7 +561,7 @@ class MainWindow(QMainWindow):
         # 创建右侧容器（结果显示）
         right_container = QWidget()
         right_layout = QVBoxLayout(right_container)
-        right_layout.setSpacing(10)
+        right_layout.setSpacing(8)
         right_layout.setContentsMargins(0, 0, 0, 0)
         self._setup_results_section(right_layout)
 
@@ -564,7 +572,7 @@ class MainWindow(QMainWindow):
         content_layout.setContentsMargins(0, 0, 0, 0)
 
         # 设置左右容器的大小策略和比例
-        left_container.setFixedWidth(400)  # 固定左侧宽度
+        left_container.setFixedWidth(380)  # 减小左侧宽度
         right_container.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
 
         # 添加左右容器到水平布局
@@ -581,7 +589,16 @@ class MainWindow(QMainWindow):
         # 添加主要内容和底部容器到主布局
         layout.addWidget(content_container)
         layout.addWidget(bottom_container)
-
+        
+        # 添加取消查询方法
+        self.cancel_query = self._cancel_query
+        
+    def _cancel_query(self):
+        """取消正在进行的查询"""
+        if self.query_worker and self.query_worker.isRunning():
+            self.query_worker.requestInterruption()
+            self.status_label.setText("查询已取消")
+        
     def _setup_query_section(self, layout: QVBoxLayout):
         """Setup query section"""
         query_group = StyledWidget()
@@ -594,21 +611,22 @@ class MainWindow(QMainWindow):
         title.setStyleSheet("""
             font-size: 14px;
             font-weight: bold;
-            color: #333333;
-            padding-bottom: 6px;
+            margin-bottom: 8px;
+            color: #2e7d32;
         """)
         query_layout.addWidget(title)
 
         # 查询输入区域
         query_input_group = QWidget()
-        query_input_layout = QVBoxLayout(query_input_group)  # 改为垂直布局
+        query_input_layout = QVBoxLayout(query_input_group)
         query_input_layout.setContentsMargins(0, 0, 0, 0)
-        query_input_layout.setSpacing(6)  # 设置组件间距
+        query_input_layout.setSpacing(6)
         
         query_label = QLabel("查询语句:")
+        query_label.setStyleSheet("font-weight: 500; color: #2e7d32;")
         self.query_input = QLineEdit()
         self.query_input.setPlaceholderText("输入域名或查询语句")
-        self.query_input.setMinimumHeight(30)  # 增加输入框高度
+        self.query_input.setMinimumHeight(32)
         
         query_input_layout.addWidget(query_label)
         query_input_layout.addWidget(self.query_input)
@@ -617,22 +635,24 @@ class MainWindow(QMainWindow):
 
         # 查询选项区域
         query_options_group = QWidget()
-        query_options_layout = QGridLayout(query_options_group)  # 使用网格布局
+        query_options_layout = QGridLayout(query_options_group)
         query_options_layout.setContentsMargins(0, 0, 0, 0)
-        query_options_layout.setSpacing(10)
+        query_options_layout.setSpacing(8)
 
         # 结果数量选择
         size_label = QLabel("结果数量:")
+        size_label.setStyleSheet("font-weight: 500; color: #2e7d32;")
         self.size_input = QSpinBox()
         self.size_input.setRange(1, 100000)
         self.size_input.setValue(settings.get('query.default_size'))
-        self.size_input.setMinimumHeight(30)  # 增加输入框高度
+        self.size_input.setMinimumHeight(32)
         
         # 输出格式选择
         format_label = QLabel("输出格式:")
+        format_label.setStyleSheet("font-weight: 500; color: #2e7d32;")
         self.format_combo = QComboBox()
         self.format_combo.addItems(["JSON", "CSV", "URL格式"])
-        self.format_combo.setMinimumHeight(30)  # 增加下拉框高度
+        self.format_combo.setMinimumHeight(32)
 
         # 添加到网格布局
         query_options_layout.addWidget(size_label, 0, 0)
@@ -644,36 +664,31 @@ class MainWindow(QMainWindow):
 
         # 添加进度显示区域
         progress_group = QWidget()
-        progress_layout = QVBoxLayout(progress_group)  # 改为垂直布局
+        progress_layout = QVBoxLayout(progress_group)
         progress_layout.setContentsMargins(0, 0, 0, 0)
-        progress_layout.setSpacing(6)  # 设置组件间距
+        progress_layout.setSpacing(6)
         
         # 进度条
         self.progress_bar = QProgressBar()
         self.progress_bar.setTextVisible(True)
         self.progress_bar.setFormat("准备就绪")
-        self.progress_bar.setMinimumHeight(25)  # 增加进度条高度
+        self.progress_bar.setMinimumHeight(22)
         self.progress_bar.setStyleSheet("""
             QProgressBar {
-                border: 1px solid #dcdcdc;
-                border-radius: 4px;
+                border: 1px solid #d0d0d0;
+                border-radius: 3px;
+                background-color: #f5f5f5;
                 text-align: center;
-                background-color: #f8f9fa;
             }
             QProgressBar::chunk {
-                background-color: #00C250;
-                border-radius: 3px;
+                background-color: #2e7d32;
+                border-radius: 2px;
             }
         """)
         
         # 状态标签
         self.status_label = QLabel()
-        self.status_label.setStyleSheet("""
-            QLabel {
-                color: #666666;
-                font-size: 12px;
-            }
-        """)
+        self.status_label.setStyleSheet("margin-top: 3px; color: #607d8b; font-size: 12px;")
         
         progress_layout.addWidget(self.progress_bar)
         progress_layout.addWidget(self.status_label)
@@ -686,14 +701,17 @@ class MainWindow(QMainWindow):
         button_layout.setContentsMargins(0, 0, 0, 0)
         
         self.query_button = QPushButton("执行查询")
+        self.query_button.setMinimumHeight(32)
         self.query_button.setStyleSheet("""
             QPushButton {
-                background-color: #00C250;
-                min-width: 100px;
-                min-height: 32px;  # 增加按钮高度
+                background-color: #2e7d32;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 4px 12px;
             }
             QPushButton:hover {
-                background-color: #00A040;
+                background-color: #60ad5e;
             }
         """)
         self.query_button.clicked.connect(self.perform_query)
@@ -702,7 +720,7 @@ class MainWindow(QMainWindow):
         
         query_layout.addWidget(button_widget)
         layout.addWidget(query_group)
-
+        
     def _setup_results_section(self, layout: QVBoxLayout):
         """Setup results section"""
         results_group = StyledWidget()
@@ -715,44 +733,77 @@ class MainWindow(QMainWindow):
         title.setStyleSheet("""
             font-size: 14px;
             font-weight: bold;
-            color: #333333;
-            padding-bottom: 6px;
+            margin-bottom: 8px;
+            color: #2e7d32;
         """)
         results_layout.addWidget(title)
 
         # 创建选项卡
         self.tab_widget = QTabWidget()
         self.tab_widget.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        self.tab_widget.setStyleSheet("""
+            QTabWidget::pane {
+                border: 1px solid #d0d0d0;
+                border-radius: 3px;
+            }
+            QTabBar::tab {
+                background-color: #f5f5f5;
+                border: 1px solid #d0d0d0;
+                border-bottom: none;
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+                padding: 5px 10px;
+                margin-right: 2px;
+            }
+            QTabBar::tab:selected {
+                background-color: white;
+                border-bottom: 1px solid white;
+                color: #2e7d32;
+                font-weight: bold;
+            }
+        """)
         
         # 表格视图
         self.table = QTableWidget()
         self.table.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         self.table.setColumnCount(len(settings.get('export.fields')))
         self.table.setHorizontalHeaderLabels(settings.get('export.fields'))
-        
-        # 设置表格样式和字体
         self.table.setStyleSheet("""
             QTableWidget {
-                gridline-color: #f0f0f0;
-                font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
-            }
-            QTableWidget::item {
-                padding: 8px;
-                border-bottom: 1px solid #f0f0f0;
-            }
-            QTableWidget::item:alternate {
-                background: #f8f9fa;
+                gridline-color: #e0e0e0;
+                border: none;
             }
             QHeaderView::section {
-                font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+                background-color: #f0f7f0;
+                color: #2e7d32;
+                font-weight: bold;
+                border: none;
+                border-right: 1px solid #d0d0d0;
+                border-bottom: 1px solid #d0d0d0;
+                padding: 6px;
+                font-size: 12px;
+            }
+            QTableWidget::item {
+                padding: 5px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            QTableWidget::item:selected {
+                background-color: #e8f5e9;
+                color: #2e7d32;
+            }
+            QTableWidget::item:alternate {
+                background-color: #fafafa;
             }
         """)
         
         # 设置表格属性
         self.table.setAlternatingRowColors(True)
-        self.table.setShowGrid(True)
-        self.table.setGridStyle(Qt.PenStyle.SolidLine)
+        self.table.setShowGrid(False)  # 不显示网格线，使用自定义边框
+        self.table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.table.setSelectionMode(QTableWidget.SelectionMode.SingleSelection)
         self.table.setSortingEnabled(True)
+        self.table.verticalHeader().setVisible(False)  # 隐藏行号
+        self.table.verticalHeader().setDefaultSectionSize(36)  # 设置行高
         
         # 设置表头属性
         header = self.table.horizontalHeader()
@@ -760,36 +811,174 @@ class MainWindow(QMainWindow):
         header.setSectionsClickable(True)
         header.setSectionsMovable(True)
         header.setHighlightSections(True)
+        header.setDefaultAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+        
+        # 连接双击事件
+        self.table.cellDoubleClicked.connect(self._show_item_detail)
+        
+        # 启用右键菜单
+        self.table.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.table.customContextMenuRequested.connect(self._show_table_context_menu)
         
         # JSON视图
         self.json_view = QTextEdit()
         self.json_view.setReadOnly(True)
         self.json_view.setStyleSheet("""
             QTextEdit {
-                font-family: 'Microsoft YaHei', 'Consolas', 'Courier New', monospace;
-                font-size: 13px;
-                line-height: 1.4;
-                padding: 10px;
+                font-family: Consolas, 'Courier New', monospace;
+                font-size: 12px;
+                line-height: 1.3;
+                padding: 8px;
+                background-color: #fafafa;
+                border: none;
             }
         """)
-
+        
+        # 添加到选项卡
         self.tab_widget.addTab(self.table, "表格视图")
         self.tab_widget.addTab(self.json_view, "JSON视图")
 
         results_layout.addWidget(self.tab_widget)
         layout.addWidget(results_group)
+        
+    def _show_item_detail(self, row, col):
+        """显示数据项详情"""
+        if not self.results or 'data' not in self.results or row >= len(self.results['data']):
+            return
+        
+        # 获取选中行的完整数据
+        item_data = self.results['data'][row]
+        
+        # 创建详情对话框
+        detail_dialog = QDialog(self)
+        detail_dialog.setWindowTitle("数据详情")
+        detail_dialog.setMinimumSize(600, 400)
+        
+        dialog_layout = QVBoxLayout(detail_dialog)
+        
+        # 创建文本编辑器显示格式化的JSON
+        detail_text = QTextEdit()
+        detail_text.setReadOnly(True)
+        detail_text.setStyleSheet("""
+            QTextEdit {
+                font-family: 'Courier New', monospace;
+                font-size: 12px;
+                line-height: 1.3;
+                padding: 8px;
+                background-color: #fafafa;
+                border: none;
+            }
+        """)
+        
+        # 格式化JSON
+        json_str = json.dumps(item_data, ensure_ascii=False, indent=2)
+        detail_text.setText(json_str)
+        
+        dialog_layout.addWidget(detail_text)
+        
+        # 添加关闭按钮
+        button_layout = QHBoxLayout()
+        close_button = QPushButton("关闭")
+        close_button.setStyleSheet("""
+            QPushButton {
+                background-color: #2e7d32;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px 12px;
+                min-width: 80px;
+            }
+            QPushButton:hover {
+                background-color: #60ad5e;
+            }
+        """)
+        close_button.clicked.connect(detail_dialog.close)
+        
+        button_layout.addStretch()
+        button_layout.addWidget(close_button)
+        dialog_layout.addLayout(button_layout)
+        
+        # 显示对话框
+        detail_dialog.exec()
+        
+    def _show_table_context_menu(self, position):
+        """显示表格右键菜单"""
+        if not self.results or not self.table.rowCount():
+            return
+            
+        # 获取当前选中行
+        selected_indexes = self.table.selectedIndexes()
+        if not selected_indexes:
+            return
+            
+        row = selected_indexes[0].row()
+        
+        # 创建右键菜单
+        context_menu = QMenu(self)
+        view_action = QAction("查看详情", self)
+        copy_action = QAction("复制行数据", self)
+        copy_cell_action = QAction("复制单元格", self)
+        
+        # 连接动作信号
+        view_action.triggered.connect(lambda: self._show_item_detail(row, 0))
+        copy_action.triggered.connect(lambda: self._copy_row_data(row))
+        copy_cell_action.triggered.connect(lambda: self._copy_cell_data(selected_indexes[0].row(), selected_indexes[0].column()))
+        
+        # 添加动作到菜单
+        context_menu.addAction(view_action)
+        context_menu.addAction(copy_action)
+        context_menu.addAction(copy_cell_action)
+        
+        # 显示菜单
+        context_menu.exec(self.table.mapToGlobal(position))
+        
+    def _copy_row_data(self, row):
+        """复制行数据到剪贴板"""
+        if not self.results or 'data' not in self.results or row >= len(self.results['data']):
+            return
+            
+        # 获取行数据
+        row_data = self.results['data'][row]
+        
+        # 将数据转换为文本
+        text = json.dumps(row_data, ensure_ascii=False, indent=2)
+        
+        # 复制到剪贴板
+        clipboard = QApplication.clipboard()
+        clipboard.setText(text)
+        
+        # 显示提示
+        self.status_label.setText("行数据已复制到剪贴板")
+        
+    def _copy_cell_data(self, row, col):
+        """复制单元格数据到剪贴板"""
+        item = self.table.item(row, col)
+        if item:
+            # 获取单元格文本
+            text = item.text()
+            
+            # 复制到剪贴板
+            clipboard = QApplication.clipboard()
+            clipboard.setText(text)
+            
+            # 显示提示
+            self.status_label.setText("单元格数据已复制到剪贴板")
 
     def _setup_export_section(self, layout: QHBoxLayout):
         """Setup export section"""
         self.export_button = QPushButton("导出结果")
+        self.export_button.setMinimumWidth(100)
+        self.export_button.setMinimumHeight(32)
         self.export_button.setStyleSheet("""
             QPushButton {
-                background-color: #00C250;
-                min-width: 120px;
-                min-height: 32px;
+                background-color: #2e7d32;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 4px 12px;
             }
             QPushButton:hover {
-                background-color: #00A040;
+                background-color: #60ad5e;
             }
         """)
         self.export_button.clicked.connect(self.export_results)
@@ -869,9 +1058,20 @@ class MainWindow(QMainWindow):
                 elif not isinstance(value, str):
                     value = str(value)
                 
-                # 创建表格项并设置对齐方式
+                # 创建表格项并设置对齐方式和样式
                 table_item = QTableWidgetItem(value)
                 table_item.setTextAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
+                
+                # 根据列类型设置不同的样式
+                if field == 'ip' or field == 'port':
+                    table_item.setForeground(Qt.GlobalColor.darkBlue)
+                elif field == 'domain':
+                    table_item.setForeground(Qt.GlobalColor.darkGreen)
+                    # 设置字体为粗体
+                    font = table_item.font()
+                    font.setBold(True)
+                    table_item.setFont(font)
+                    
                 self.table.setItem(row, col, table_item)
 
         # 调整所有列的宽度以适应内容
@@ -881,10 +1081,13 @@ class MainWindow(QMainWindow):
         for col in range(self.table.columnCount()):
             if self.table.columnWidth(col) < 100:
                 self.table.setColumnWidth(col, 100)
+            elif self.table.columnWidth(col) > 300:
+                self.table.setColumnWidth(col, 300)  # 设置最大列宽
 
         # 更新JSON视图，确保使用UTF-8编码
         try:
             json_str = json.dumps(self.results, ensure_ascii=False, indent=2)
+            # 直接设置文本内容，不使用高亮功能
             self.json_view.setText(json_str)
         except Exception as e:
             logger.error(f"Failed to format JSON view: {str(e)}")
