@@ -1,37 +1,37 @@
 {
-  "api": {
-    "base_url": "https://quake.360.net/api/search/query_string/quake_service",
-    "headers": {
-      "Content-Type": "application/json",
-      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+    "api": {
+        "base_url": "https://quake.360.net/api/search/query_string/quake_service",
+        "headers": {
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        }
+    },
+    "query": {
+        "default_size": 100,
+        "max_size": 100000,
+        "default_format": "JSON"
+    },
+    "device_info": {
+        "device_type": "PC",
+        "os": "Windows",
+        "os_version": "10.0",
+        "language": "zh_CN",
+        "network": "3g",
+        "browser_info": "Chrome（版本: 100.0.4896.60  内核: Blink）"
+    },
+    "export": {
+        "fields": [
+            "domain",
+            "ip",
+            "port",
+            "service.name",
+            "location.country_cn",
+            "location.province_cn",
+            "location.city_cn"
+        ]
+    },
+    "auth": {
+        "cookie": "",
+        "remember_auth": true
     }
-  },
-  "query": {
-    "default_size": 100,
-    "max_size": 100000,
-    "default_format": "JSON"
-  },
-  "device_info": {
-    "device_type": "PC",
-    "os": "Windows",
-    "os_version": "10.0",
-    "language": "zh_CN",
-    "network": "3g",
-    "browser_info": "Chrome（版本: 100.0.4896.60  内核: Blink）"
-  },
-  "export": {
-    "fields": [
-      "domain",
-      "ip",
-      "port",
-      "service.name",
-      "location.country_cn",
-      "location.province_cn",
-      "location.city_cn"
-    ]
-  },
-  "auth": {
-    "cookie": "cert_common=f76dd51a-95f9-467e-8d31-833f67cb7477; __guid=73887506.3385992690914366500.1747299859495.6985; i360QRKEY=b99320dcebb44a345968f32c5776d94a468; __quc_silent__=1; Q=u%3D360H2781949797%26n%3D%26le%3DAQpkAwDlZQD4WGDjpKRhL29g%26m%3DZGtlWGWOWGWOWGWOWGWOWGWOZGVl%26qid%3D2781949797%26im%3D1_t011655040b3ed000bf%26src%3Dpcw_quake%26t%3D1; __NS_Q=u%3D360H2781949797%26n%3D%26le%3DAQpkAwDlZQD4WGDjpKRhL29g%26m%3DZGtlWGWOWGWOWGWOWGWOWGWOZGVl%26qid%3D2781949797%26im%3D1_t011655040b3ed000bf%26src%3Dpcw_quake%26t%3D1; T=s%3Dc86449d1428e9f21b02bfb063353e945%26t%3D1747299871%26lm%3D%26lf%3D2%26sk%3D5dc7ce60b34a1837f83a5b26a4d147d3%26mt%3D1747299871%26rc%3D%26v%3D2.0%26a%3D1; __NS_T=s%3Dc86449d1428e9f21b02bfb063353e945%26t%3D1747299871%26lm%3D%26lf%3D2%26sk%3D5dc7ce60b34a1837f83a5b26a4d147d3%26mt%3D1747299871%26rc%3D%26v%3D2.0%26a%3D1",
-    "remember_auth": true
-  }
 }
