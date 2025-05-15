@@ -28,6 +28,7 @@ class QueryManager:
         if size is None:
             size = settings.get('query.default_size')
 
+        
         # 清理查询语句
         query = self._clean_query(query)
         logger.debug(f"Cleaned query: {query}")
@@ -43,7 +44,6 @@ class QueryManager:
             "size": min(size, 100),  # 每页最大100条
             "latest": True,
             "ignore_cache": False,
-            "shortcuts": ["63734bfa9c27d4249ca7261c"],
             "start": start,
             "device": device_info
         }
