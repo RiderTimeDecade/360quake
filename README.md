@@ -63,13 +63,54 @@ python build.py
 5. 点击"执行查询"按钮开始查询
 6. 查询完成后可以查看结果或导出数据
 
+### 查询语法说明
+
+工具支持完整的 360 Quake 查询语法。输入规则：
+
+- 输入完整查询语句（含 `字段: "值"` 或 `字段="值"` 字段符，或 `AND`/`OR`/`NOT` 逻辑运算）时，语句将**原样透传**至服务端
+- 仅输入裸关键词（如 `example.com`）时，默认按 `domain` 字段查询
+- 建议为字段值加英文双引号，尤其是值中包含空格、冒号或中文时
+
 ### 查询语法示例
 
-- 域名查询：`domain: "example.com"`
-- IP 查询：`ip: "1.1.1.1"`
-- 端口查询：`port: 443`
-- 服务查询：`service: "http"`
-- 组合查询：`service: "http" AND country: "China"`
+**基础字段查询**
+
+| 场景 | 示例 |
+|------|------|
+| 域名 | `domain: "example.com"` |
+| IP / CIDR | `ip: "1.1.1.1"` / `ip: "1.1.1.0/24"` |
+| 端口 | `port: "443"` |
+| 服务 | `service: "http"` |
+| 应用组件 | `app: "Apache"` |
+| 主机名 | `hostname: "example.com"` |
+| 备案号 | `icp="京ICP证030173号"` |
+| 证书 | `cert: "example.com"` |
+| 网页标题 | `title: "后台登录"` |
+| 响应体 | `body: "keywords"` |
+
+**地理位置与组织**
+
+| 场景 | 示例 |
+|------|------|
+| 国家 | `country: "CN"` |
+| 省份 | `province: "Beijing"` |
+| 城市 | `city: "Shanghai"` |
+| 组织 | `org: "Alibaba"` |
+
+**组合与逻辑查询**
+
+```text
+service: "http" AND country: "CN"
+port: "8080" AND service: "tomcat"
+domain: "example.com" AND NOT port: "443"
+(ip: "1.1.1.1" OR domain: "example.com") AND service: "http"
+```
+
+**裸关键词**
+
+```text
+example.com        # 自动按 domain: "example.com" 查询
+```
 
 ### 导出格式说明
 
@@ -118,6 +159,14 @@ python build.py
    - Windows 7 及以上版本
    - macOS 10.14 及以上版本
    - 主流 Linux 发行版
+
+## 更新日志
+
+### 2026-10-14
+
+- **修复查询语句被错误添加 `domain:` 前缀（issue #7）**：此前输入 `icp="xxx"` 等不含冒号的字段查询会被整体包裹成 `domain: "icp="xxx""`，导致查询结果与预期不符。现仅对裸关键词（无字段符、无逻辑运算符）补全 `domain:` 前缀，含 `field: value` 或 `field="value"` 字段符及 `AND/OR/NOT` 的查询语句原样透传（[main_window.py](src/ui/main_window.py) `_format_query`）
+- **修复查询清理阶段误剥引号**：`_clean_query` 此前会剥掉查询末尾的引号（如 `icp="xxx"` 变成 `icp="xxx`），现仅当整句被双引号完整包裹时才移除外层引号；同时 `domain:` 开头的复合查询不再被整句裹入引号（[query_manager.py](src/core/query_manager.py) `_clean_query`）
+- 验证：本地 9 条语句处理用例全部通过；真实接口验证裸关键词（`baidu.com`）与 `icp="京ICP证030173号"` 均正确命中目标数据
 
 ## 贡献
 

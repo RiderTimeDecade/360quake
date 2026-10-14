@@ -8,6 +8,7 @@ from ..config.settings import settings
 from ..utils.logger import logger
 import os
 import json
+import re
 import time
 
 class QueryManager:
@@ -53,8 +54,11 @@ class QueryManager:
 
     def _clean_query(self, query: str) -> str:
         """Clean and format query string"""
-        # 移除开头和结尾的引号
-        query = query.strip().strip('"')
+        query = query.strip()
+        # 仅当整句被双引号完整包裹时才移除外层引号，
+        # 避免误剥字段值尾部引号导致 icp="xxx" 变成 icp="xxx（issue #7）
+        if len(query) >= 2 and query.startswith('"') and query.endswith('"'):
+            query = query[1:-1]
         
         # 如果查询以 "服务数据 |" 开头，移除它
         if query.startswith("服务数据 |"):
@@ -66,9 +70,12 @@ class QueryManager:
             
         # 规范化域名查询格式
         if query.startswith('domain:'):
-            # 确保domain查询有正确的引号
-            domain_part = query[7:].strip().strip('"')  # 移除domain:后的内容中的引号
-            query = f'domain:"{domain_part}"'  # 重新添加正确的引号
+            domain_part = query[7:].strip()
+            # 仅对简单值补全双引号；含逻辑运算符/括号的复合查询原样保留，
+            # 避免 domain: x.com AND port: 80 被整句裹进引号
+            if not re.search(r'\b(AND|OR|NOT)\b|[()]', domain_part, re.IGNORECASE):
+                domain_part = domain_part.strip('"')  # 移除domain:后的内容中的引号
+                query = f'domain:"{domain_part}"'  # 重新添加正确的引号
         elif query.startswith('app:'):
             # 确保app查询有正确的引号
             app_part = query[4:].strip().strip('"')  # 移除app:后的内容中的引号

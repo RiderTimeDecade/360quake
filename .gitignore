@@ -1,2 +1,19 @@
+# 用户本地配置（含 Cookie 等认证信息，禁止入库）
+config.json
+src/config/settings.json
 
+# 运行日志
 /logs
+logs/
+
+# Python 编译缓存
+__pycache__/
+*.pyc
+
+# 查询结果导出文件
+quake_results_*
+
+# 打包产物
+/releases
+build/
+dist/

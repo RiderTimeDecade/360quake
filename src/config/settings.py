@@ -35,6 +35,7 @@ class Settings:
                 }
             },
             "auth": {
+                # 默认不内置任何 Cookie，认证信息由用户在界面中输入并保存在本地 config.json（不纳入版本控制）
                 "cookie": "",
                 "remember_auth": True
             },

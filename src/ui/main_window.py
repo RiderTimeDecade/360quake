@@ -1018,20 +1018,13 @@ class MainWindow(QMainWindow):
 
     def _format_query(self, query: str) -> str:
         """Format query string to match Quake's syntax"""
-        # 如果询中没有指定字段，默认添加domain字段
-        if ':' not in query:
-            query = f'domain: "{query}"'
-        
-        # 确保域名使用双引号
-        def replace_domain(match):
-            value = match.group(2)
-            # 移除有的引号
-            value = value.strip('"\'')
-            return f'domain: "{value}"'
-        
-        query = re.sub(r'(domain\s*:\s*)([^,\s]+)', replace_domain, query)
-        
-        return query
+        # 已包含字段符（field: 或 field= 语法）或逻辑运算符时，视为完整查询语句，原样透传，
+        # 避免 icp="xxx" 这类语句被错误包裹成 domain: "icp="xxx""（issue #7）
+        if re.search(r'\w+\s*[:=]', query) or re.search(r'\b(AND|OR|NOT)\b', query, re.IGNORECASE):
+            return query
+
+        # 仅裸关键词（如 example.com）默认按 domain 查询，统一剥掉用户自带引号后用双引号包裹
+        return f'domain: "{query.strip("\"\'")}"'
 
     def _update_views(self):
         """Update all views with query results"""
