@@ -39,6 +39,10 @@ class Settings:
                 "cookie": "",
                 "remember_auth": True
             },
+            "ui": {
+                # 界面主题：system（跟随系统）/ light（浅色）/ dark（深色）
+                "theme": "system"
+            },
             "query": {
                 "default_size": 100,
                 "max_size": 1000,

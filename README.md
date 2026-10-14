@@ -1,10 +1,10 @@
 # 360Quake 查询工具
 
-一个基于 PyQt6 开发的 360 Quake 网络空间测绘引擎查询工具，提供了简单直观的图形界面，支持多种数据导出格式。
+一个基于 PySide6 开发的 360 Quake 网络空间测绘引擎查询工具，提供了简单直观的图形界面，支持多种数据导出格式。
 
 [![GitHub license](https://img.shields.io/github/license/RiderTimeDecade/360quake)](https://github.com/RiderTimeDecade/360quake/blob/main/LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
-[![PyQt Version](https://img.shields.io/badge/PyQt-6.6.1-green.svg)](https://pypi.org/project/PyQt6/)
+[![PySide Version](https://img.shields.io/badge/PySide-6-green.svg)](https://pypi.org/project/PySide6/)
 
 ## 功能特点
 
@@ -16,6 +16,8 @@
 - 跨平台支持（Windows、macOS、Linux）
 - 异步查询，避免界面卡顿
 - 支持查询结果表格排序和过滤
+- 数据详情结构化树形展示（关键字段摘要、按类型着色、搜索过滤、字段复制）
+- 浅色/深色双主题，支持跟随系统自动切换
 
 ## 安装说明
 
@@ -136,7 +138,7 @@ example.com        # 自动按 domain: "example.com" 查询
 ## 技术栈
 
 - Python 3.8+
-- PyQt6 6.6.1
+- PySide6
 - requests 2.31.0
 - PyInstaller 6.3.0
 
@@ -161,6 +163,22 @@ example.com        # 自动按 domain: "example.com" 查询
    - 主流 Linux 发行版
 
 ## 更新日志
+
+### 2026-10-14（三）
+
+- **数据详情弹窗改为结构化树形视图**：原先直接显示原始 JSON 文本，现改为三段式布局（[main_window.py](src/ui/main_window.py) `DataDetailDialog`）
+  - 摘要区：置顶展示域名/IP/端口/服务/标题/地理位置等关键字段
+  - 树形区：递归呈现完整嵌套结构，`dict`/`list` 节点可展开折叠并显示条目数量，叶子值按数据类型着色（字符串/数值/布尔/空值）
+  - 搜索框：按关键字过滤字段名或字段值，命中分支自动展开
+  - 支持「展开全部/折叠全部」、复制单个字段值、复制完整 JSON，以及节点右键菜单
+- [theme.py](src/ui/theme.py) 新增值类型着色令牌与 QTreeWidget/摘要区样式，深浅色主题均适配
+
+### 2026-10-14（二）
+
+- **新增主题系统**：样式重构为集中式管理，新增 [theme.py](src/ui/theme.py) 设计令牌（色板/语义化颜色）与全局 QSS 生成器，替代原先散落在各组件中的 26+ 处重复内联样式；组件通过 `objectName`（`#sectionTitle`/`#primaryButton`/`#dangerButton` 等）挂接语义化样式
+- **支持浅色/深色双主题**：认证设置区新增"主题"下拉框（跟随系统/浅色/深色），切换立即生效并持久化到本地配置；"跟随系统"模式下自动响应系统深浅色变化（Qt 6.5+）
+- 表格中 IP/域名字段的高亮色改为随主题令牌适配，深色模式下保持可读性
+- 修正文档中框架描述：实际使用 PySide6（原误写为 PyQt6）
 
 ### 2026-10-14
 
